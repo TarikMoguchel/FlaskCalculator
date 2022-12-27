@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Цалин 2022
+{% endblock %}
+
+
+{% block body %}
+<div class="main_content">
+    <div class="main_content_table">
+        <div class="main_content_table_calculations">
+            <div class="main_content_table_block">
+                <span>Цалингийн тооцоолуур</span>
+                <div class="main_content_table_block_column">
+                    <span>Yндсэн цалин</span>
+                    <input id="k_bs" type="text" pattern="\d*" class="main_content_table_block_column_input"
+                        value="500000.00" />
+                    <span>Гарт авах цалин</span>
+                    <input id="k_thp" type="text" pattern="\d*" class="main_content_table_block_column_input" value="500.00"/>
+                </div>
+            </div>
+            <div class="main_content_table_block">
+                <span>Татвар</span>
+                <div class="main_content_table_block_column">
+                    <span>НДШ - Ажил олгогч</span>
+                    <input id="k_csstr" type="text" pattern="\d*" class="main_content_table_block_column_input" value="13.5"/>
+                    <span>НДШ - Хувь хүн</span>
+                    <input id="k_psstr" type="text" pattern="\d*" class="main_content_table_block_column_input" value="11.5"/>
+                    <span>ХХОАТ</span>
+                    <input id="k_pitr" type="text" pattern="\d*" class="main_content_table_block_column_input" value="10.0"/>
+                    <div class="main_content_table_block_column_checkbox">
+                        <input type="checkbox" id="k_dchk">
+                        <label for="k_dchk">Хөнгөлөлт байхгүй</label>
+                    </div>
+                </div>
+            </div>
+            <div class="main_content_table_block">
+                <span>Тооцооны дэлгэрэнгүй</span>
+                <div class="main_content_table_block_column">
+                    <span>НДШ - Ажил олгогч</span>
+                    <input id="k_csst" type="text" pattern="\d*" disabled class="main_content_table_block_column_disabled_input" />
+                    <span>НДШ - Хувь хүн</span>
+                    <input id="k_psst" type="text" pattern="\d*" disabled class="main_content_table_block_column_disabled_input" />
+                    <span>ХХОАТ</span>
+                    <input id="k_pit" type="text" pattern="\d*" disabled class="main_content_table_block_column_disabled_input" />
+                    <span>Хөнгөлөлт</span>
+                    <input id="k_dis" type="text" pattern="\d*" disabled class="main_content_table_block_column_disabled_input" />
+                </div>
+            </div>
+        </div>
+        <div class="main_content_table_buttons">
+            <button id="ҮЦ_button" class="main_content_table_button">Тооцоо (ҮЦ)</button>
+            <button id="ГЦ_button"class="main_content_table_button">Тооцоо (ГЦ)</button>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/python">
+    from browser import document
+    import re
+
+    def onInputFocus(event):
+        currentText = event.target.value
+        if currentText!='':
+            event.target.value = re.sub(r'[,]','',str(currentText))
+
+    def onInputBlur(event,zeroLength):
+        currentText = event.target.value
+        if currentText != '':
+            if zeroLength == 2:            
+                event.target.value = f"{float(re.sub(r'[,]','',str(currentText))):,.2f}"
+            elif zeroLength == 1:             
+                event.target.value = f"{float(re.sub(r'[,]','',str(currentText))):,.1f}"
+            elif zeroLength == 0:             
+                event.target.value = f"{float(re.sub(r'[,]','',str(currentText))):,.0f}"
+        else:
+            if zeroLength == 2:            
+                event.target.value = "0.00"
+            elif zeroLength == 1:             
+                event.target.value = "0.0"
+            elif zeroLength == 0:             
+                event.target.value = "0"
+
+
+    def keyboard_on_textinput(event):
+        print(event.target.value[-1])
+        if re.fullmatch(r'[^\d\.]',event.target.value[-1]):
+            event.target.value = event.target.value[:-1]
+        if re.fullmatch(r'\.',event.target.value[-1]):
+            event.target.value = re.sub(r'\.','',str(event.target.value))+"."
+
+    #inputs ids: k_bs,k_thp,k_csstr,k_psstr,k_pitr
+        
+
+    document["k_bs"].bind("focus", onInputFocus)
+    document["k_bs"].bind("blur", lambda ev: onInputBlur(ev,2))
+    document["k_bs"].bind("input", keyboard_on_textinput)
+    document["k_thp"].bind("focus", onInputFocus)
+    document["k_thp"].bind("blur", lambda ev: onInputBlur(ev,2))
+    document["k_thp"].bind("input", keyboard_on_textinput)
+    document["k_csstr"].bind("focus", onInputFocus)
+    document["k_csstr"].bind("blur", lambda ev: onInputBlur(ev,1))
+    document["k_csstr"].bind("input", keyboard_on_textinput)
+    document["k_psstr"].bind("focus", onInputFocus)
+    document["k_psstr"].bind("blur", lambda ev: onInputBlur(ev,1))
+    document["k_psstr"].bind("input", keyboard_on_textinput)
+    document["k_pitr"].bind("focus", onInputFocus)
+    document["k_pitr"].bind("blur", lambda ev: onInputBlur(ev,1))
+    document["k_pitr"].bind("input", keyboard_on_textinput)
+
+
+    
+    stul = float(4200000)
+    bs = psst = psstd = pit = pitd = dis = thp = csstr = psstr = pitr = dchk = csst =0.0
+
+    # Read in discount values
+    d0 = float(20000)
+    d51 = float(18000)
+    d101 = float(16000)
+    d151 = float(14000)
+    d201 = float(12000)
+    d251 = float(10000)
+    d301 = float(0)
+
+    def core_calculation():
+        global bs 
+        global psst
+        global psstd
+        global pit
+        global pitd
+        global dis
+        global thp
+        global csstr
+        global psstr
+        global pitr
+        global dchk
+        global csst
+        print(bs, psst, psstd, pit, pitd, dis, thp, csstr, psstr, pitr, dchk, csst)
+        # Calculate tax
+        print(bs)
+        csst = round(bs / 100 * csstr, 2)
+        if bs >= stul:
+            psst = round(stul / 100 * psstr, 2)
+        else:
+            psst = round(bs / 100 * psstr, 2)
+        psstd = round(bs - psst, 2)
+        pit = round(psstd / 100 * pitr, 2)
+        pitd = round(psstd - pit, 2)
+        dis = 0.0
+        # This switch 'chk' will decide whether or not to perform
+        # discount calculation.
+        chk = True  # Default == True: This will calculate Discount
+        if pit <= 20000:
+            chk = False         # Will not Calculate Discount.
+            dis = pit  # Discount amount will be the same
+            # as PIT. In other words, there
+            # will be no Personal Income Tax
+            # for anyone whose PIT is 20,000
+            # or less.
+        if dchk == True:
+            chk = False         # Will not Calculate Discount,
+            # since checkbox is checked.
+
+        if chk == True:  # Will Calculate Discount
+            if psstd < 500_001:
+                dis = d0
+            elif psstd < 1_000_001:
+                dis = d51
+            elif psstd < 1_500_001:
+                dis = d101
+            elif psstd < 2_000_001:
+                dis = d151
+            elif psstd < 2_500_001:
+                dis = d201
+            elif psstd < 3_000_001:
+                dis = d251
+            else:
+                dis = d301
+
+        print(bs, psst, psstd, pit, pitd, dis, thp, csstr, psstr, pitr, dchk, csst)
+        
+
+    def calculate_basic_salary():
+
+        global bs 
+        global psst
+        global pit
+        global pitd
+        global dis
+        global thp
+        global csstr
+        global psstr
+        global pitr
+        global dchk
+        global csst
+
+        # Set up variables for calculation
+        csstr = float(document["k_csstr"].value)
+        psstr = float(document["k_psstr"].value)
+        pitr = float(document["k_pitr"].value)
+
+        dchk = document["k_dchk"].checked
+        
+        bs = float(re.sub(r'[,]','',str(document["k_bs"].value)))
+
+
+        # Call core function for calculating taxes
+        core_calculation()
+        # Set Take Home Pay and assign Kivy interface fields
+        thp = round(pitd + dis, 2)
+
+        document["k_bs"].value = f"{bs:,.2f}"
+        document["k_thp"].value = f"{thp:,.2f}" 
+
+        document["k_csst"].value = f"{csst:,.2f}"
+        document["k_psst"].value = f"{psst:,.2f}"
+        document["k_pit"].value = f"{pit:,.2f}"
+        document["k_dis"].value = f"{dis:,.2f}"
+
+    def calculate_take_home_pay():
+
+        global bs 
+        global psst
+        global pit
+        global pitd
+        global dis
+        global thp
+        global csstr
+        global psstr
+        global pitr
+        global dchk
+        global csst
+
+        # Set up variables for calculation
+        csstr = float(document["k_csstr"].value)
+        psstr = float(document["k_psstr"].value)
+        pitr = float(document["k_pitr"].value)
+        dchk = document["k_dchk"].checked
+
+        thp = float(re.sub(r'[,]','',str(document["k_thp"].value)))
+        bs = round(thp * 1.5, 2)  # multipy by 1.5
+        # Call core function for calculating taxes
+        dif = 1
+        while dif >= 0.5:
+            core_calculation()
+            cmp = round(pitd + dis, 2)
+            dif = round(abs(cmp - thp), 2)
+            bs = round(bs - dif, 0)
+        thp = round(pitd + dis, 2)
+
+        document["k_bs"].value = f"{bs:,.2f}"
+        document["k_thp"].value = f"{thp:,.2f}" 
+
+        document["k_csst"].value = f"{csst:,.2f}"
+        document["k_psst"].value = f"{psst:,.2f}"
+        document["k_pit"].value = f"{pit:,.2f}"
+        document["k_dis"].value = f"{dis:,.2f}"
+
+    
+    document["ҮЦ_button"].bind("click", calculate_basic_salary)
+    document["ГЦ_button"].bind("click", calculate_take_home_pay)
+
+    calculate_basic_salary()
+    
+
+
+
+
+</script>
+{% endblock %}

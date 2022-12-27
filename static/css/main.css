@@ -1,0 +1,136 @@
+*:focus-visible{
+    outline: none;
+}
+body{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main_header {
+    width: 100%;
+    background-color: #fff6d5;
+    box-shadow: 0 3px 3px 0 #806600;
+}
+
+.main_header_content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 90%;
+    margin: auto;
+    padding: 1rem 0;
+    color: #614e06;
+}
+
+.main_header_img {
+    height: 60px;
+    width: 60px;
+}
+
+.main_content {
+    background-color: #fff6d5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.main_content_table {
+    border: 3px solid #806600;
+    flex-direction: column;
+    display: flex;
+    border-radius: 1rem;
+    margin: 1rem;
+    padding: 1rem;
+    max-width: 900px;
+    width:80%;
+}
+
+.main_content_table_calculations {
+    flex-direction: row;
+    display: flex;
+    text-align: center;
+    margin-bottom: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.main_content_table_block {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1rem;
+    max-width:300px;
+
+}
+
+.main_content_table_block>span {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.main_content_table_block_column_input {
+    border: 1px solid #806600;
+    border-radius: 0.5rem;
+    background-color: #fffbef;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem 0.5rem;
+}
+
+.main_content_table_block_column_disabled_input {
+    border: none;
+    background-color: #fff6d5;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem 0.5rem;
+}
+
+
+.main_content_table_block_column {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.main_content_table_block_column_checkbox {
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    color: #614e06;
+
+}
+
+.main_content_table_block_column_checkbox>label {
+    cursor: pointer;
+}
+
+.main_content_table_block_column_checkbox>input {
+    margin-right: 1rem;
+
+}
+
+.main_content_table_block_column>span {
+    color: #614e06;
+    text-align: start;
+    margin: 0 0.5rem;
+
+}
+
+.main_content_table_buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.main_content_table_button {
+    border-radius: 1rem;
+    border: 1px solid #806600;
+    padding: 0.5rem 1rem;
+    margin: 0 1rem;
+    color: #614e06;
+    background-color: #fffbef;
+}
+
